@@ -1,0 +1,17 @@
+#!/bin/bash
+# Runs once, as the last thing in the boot of the test image. Prints facts about the system
+# on the serial console, where boot-test.sh reads them, and powers the machine off.
+state="$(timeout 120 systemctl is-system-running --wait 2>&1)"
+echo "BOOT-REPORT state=${state}"
+echo "BOOT-REPORT kernel=$(uname -r)"
+echo "BOOT-REPORT os=$(. /etc/os-release && echo "${PRETTY_NAME}")"
+echo "BOOT-REPORT init=$(readlink -f /sbin/init)"
+echo "BOOT-REPORT root=$(findmnt -n -o SOURCE,FSTYPE /)"
+echo "BOOT-REPORT mem_total_mb=$(awk '/MemTotal/ {print int($2 / 1024)}' /proc/meminfo)"
+echo "BOOT-REPORT mem_used_mb=$(free -m | awk '/Mem:/ {print $3}')"
+echo "BOOT-REPORT processes=$(ps -e --no-headers | wc -l)"
+echo "BOOT-REPORT failed_units=$(systemctl --failed --no-legend --plain | awk '{print $1}' | paste -sd, -)"
+echo "BOOT-REPORT $(systemd-analyze time 2>&1 | head -n 1)"
+echo "MINIMAL-ROOTFS-BOOT-OK"
+sync
+systemctl poweroff

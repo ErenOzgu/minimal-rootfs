@@ -1,0 +1,20 @@
+# SUITE METRIC MAX, checked by report.sh. About 12% above what the build produced when these were set
+# (October 2026: noble kernel 6.8.0-147, jammy kernel 5.15.0-198). They are meant to fail when an image
+# grows noticeably, not on every point release.
+noble rootfs_mb 210
+noble userland_mb 130
+noble modules_mb 35
+noble tar_gz_mb 115
+noble image_mb 320
+noble initrd_mb 22
+noble vmlinuz_mb 16
+noble packages 135
+
+jammy rootfs_mb 285
+jammy userland_mb 125
+jammy modules_mb 120
+jammy tar_gz_mb 112
+jammy image_mb 400
+jammy initrd_mb 24
+jammy vmlinuz_mb 13
+jammy packages 140

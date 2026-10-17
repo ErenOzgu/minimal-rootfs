@@ -1,0 +1,14 @@
+[Unit]
+Description=Report that the system booted, then power off (test image only)
+After=multi-user.target
+
+[Service]
+# Type=simple, so that systemd considers startup finished while the script is still running
+# and "systemctl is-system-running --wait" in the script can return.
+Type=simple
+ExecStart=/usr/local/sbin/boot-ok
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

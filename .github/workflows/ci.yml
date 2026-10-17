@@ -1,0 +1,56 @@
+---
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # The images are built from the live archive, so rebuild weekly to notice when Ubuntu's own
+    # updates make one too big, or stop it booting.
+    - cron: "23 5 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck -x build.sh boot-test.sh report.sh overlay/usr/local/sbin/boot-ok
+
+  image:
+    runs-on: ubuntu-24.04
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [jammy, noble]
+    name: build, boot, measure (${{ matrix.suite }})
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install debootstrap and QEMU
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends debootstrap qemu-system-x86
+      - name: Build the image
+        run: sudo ./build.sh "${{ matrix.suite }}" "out/${{ matrix.suite }}"
+      - name: Boot it in QEMU
+        run: sudo ./boot-test.sh "out/${{ matrix.suite }}" 900
+      - name: Size report and budget
+        run: sudo ./report.sh "out/${{ matrix.suite }}" budget.txt
+      - name: Show the report on the run page
+        if: always()
+        run: |
+          if [ -f "out/${{ matrix.suite }}/report.md" ]; then cat "out/${{ matrix.suite }}/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Keep the console log and the numbers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.suite }}-boot
+          path: |
+            out/${{ matrix.suite }}/serial.log
+            out/${{ matrix.suite }}/report.json
+            out/${{ matrix.suite }}/report.md
+          if-no-files-found: ignore
+          retention-days: 14
