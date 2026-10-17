@@ -38,6 +38,7 @@ metrics_tar_gz_mb="$(mb "$tar_gz")"
 boot_value() { sed -n "s/.*BOOT-REPORT $1=\(.*\)\r\{0,1\}$/\1/p" "$log" 2>/dev/null | tail -n 1 | tr -d '\r'; }
 kernel_version="$(boot_value kernel)"
 startup="$(sed -n 's/.*BOOT-REPORT Startup finished in //p' "$log" 2>/dev/null | tail -n 1 | tr -d '\r')"
+qemu_mode="$(cat "$out/boot-mode" 2>/dev/null || echo unknown)"
 processes="$(boot_value processes)"
 mem_used="$(boot_value mem_used_mb)"
 state="$(boot_value state)"
@@ -66,7 +67,7 @@ state="$(boot_value state)"
     echo
     echo "Boot: kernel ${kernel_version}, systemd state \`${state}\`, ${processes} processes, ${mem_used} MB used."
     echo "systemd: ${startup}"
-    echo "(Timings are from whatever QEMU mode ran the test; software emulation is several times slower than KVM.)"
+    echo "QEMU ran with ${qemu_mode}; software emulation is several times slower than KVM, so compare timings only within one mode."
   fi
 } | tee "$out/report.md"
 

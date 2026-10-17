@@ -29,7 +29,7 @@ sudo ./report.sh out/noble budget.txt    # sizes, boot facts, budget check
 | Installed packages | 118 | 124 |
 | Memory in use after boot | about 60 MB | about 40 MB |
 
-Numbers are from the build in October 2026 (kernels 6.8.0-147 and 5.15.0-198). The run page of every CI job shows the current ones, with the biggest packages.
+Numbers are from the build in October 2026 (kernels 6.8.0-147 and 5.15.0-198); the GitHub runner produced the same sizes as my machine. The run page of every CI job shows the current ones, with the biggest packages. On a runner with KVM, systemd reports startup finished in about 2.1 seconds for both suites; under software emulation in my sandbox it took 16 s (jammy) and 29 s (noble).
 
 ## What `build.sh` does
 
@@ -47,7 +47,7 @@ It starts the image with `qemu-system-x86_64`, handing QEMU the kernel and initr
 - prints the kernel version, the failed units, memory use, the process count and the `systemd-analyze` timing;
 - prints a marker line and powers the machine off.
 
-The script passes only if the marker is on the console and the state was `running`. A hang is caught by a timeout. KVM is used if `/dev/kvm` is usable, otherwise it falls back to software emulation (several times slower; the CI summary says which one ran).
+The script passes only if the marker is on the console and the state was `running`. A hang is caught by a timeout. KVM is used if `/dev/kvm` is usable, otherwise it falls back to software emulation (several times slower; the report says which one ran).
 
 ## What `report.sh` and the budget do
 

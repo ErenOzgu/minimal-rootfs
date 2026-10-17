@@ -55,3 +55,4 @@ if ! grep -q 'BOOT-REPORT state=running' "$log"; then
 fi
 echo "PASS: booted to multi-user mode, systemd state is running ($mode, ${elapsed}s wall clock)"
 printf '%s\n' "$elapsed" > "$out/boot-wall-seconds"
+printf '%s\n' "$mode" > "$out/boot-mode"
