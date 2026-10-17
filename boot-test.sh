@@ -41,7 +41,11 @@ echo "----"
 
 # The journal forwards the line to the console with a timestamp and "boot-ok[pid]:" in front of it.
 if ! grep -Eq 'boot-ok\[[0-9]+\]: MINIMAL-ROOTFS-BOOT-OK' "$log"; then
-  [ "$status" -eq 124 ] && echo "FAIL: timed out without reaching the marker" || echo "FAIL: marker not found"
+  if [ "$status" -eq 124 ]; then
+    echo "FAIL: timed out without reaching the marker"
+  else
+    echo "FAIL: marker not found"
+  fi
   exit 1
 fi
 if ! grep -q 'BOOT-REPORT state=running' "$log"; then

@@ -103,7 +103,10 @@ DPKG
 echo "== kernel and initramfs"
 vmlinuz="$(find "$root/boot" -maxdepth 1 -name 'vmlinuz-*' | sort -V | tail -n 1)"
 initrd="$(find "$root/boot" -maxdepth 1 -name 'initrd.img-*' | sort -V | tail -n 1)"
-[ -n "$vmlinuz" ] && [ -n "$initrd" ] || { echo "no kernel or initramfs in $root/boot" >&2; exit 1; }
+if [ -z "$vmlinuz" ] || [ -z "$initrd" ]; then
+  echo "no kernel or initramfs in $root/boot" >&2
+  exit 1
+fi
 install -m 0644 "$vmlinuz" "$out/vmlinuz"
 install -m 0644 "$initrd" "$out/initrd.img"
 echo "kernel: $(basename "$vmlinuz")"

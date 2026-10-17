@@ -84,7 +84,11 @@ if [ -n "$budget" ]; then
     case "$b_suite" in \#*) continue ;; esac
     [ "$b_suite" = "$suite" ] || continue
     var="metrics_$b_metric"
-    [ "$b_metric" = packages ] && actual="$packages" || actual="${!var}"
+    if [ "$b_metric" = packages ]; then
+      actual="$packages"
+    else
+      actual="${!var}"
+    fi
     if awk -v a="$actual" -v m="$b_max" 'BEGIN { exit !(a <= m) }'; then
       lines+="  ok    $b_metric = $actual (max $b_max)"$'\n'
     else
