@@ -29,7 +29,7 @@ sudo ./report.sh out/noble budget.txt    # sizes, boot facts, budget check
 | Installed packages | 118 | 124 |
 | Memory in use after boot | about 60 MB | about 40 MB |
 
-Numbers are from the build in October 2026 (kernels 6.8.0-147 and 5.15.0-198); the GitHub runner produced the same sizes as my machine. The run page of every CI job shows the current ones, with the biggest packages. On a runner with KVM, systemd reports startup finished in about 2.1 seconds for both suites; under software emulation in my sandbox it took 16 s (jammy) and 29 s (noble).
+Numbers are from the build in October 2026 (kernels 6.8.0-147 and 5.15.0-198); the GitHub runner produced the same sizes as my machine. The run page of every CI job shows the current ones, with the biggest packages. On a runner with KVM, systemd reports startup finished in about 2.1 seconds for both suites; under software emulation in my sandbox it took about 16 s (jammy) and 30 s (noble).
 
 ## What `build.sh` does
 
