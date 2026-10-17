@@ -11,7 +11,7 @@ set -euo pipefail
 out="${1:?usage: ./report.sh OUTDIR [budget.txt]}"
 budget="${2:-}"
 root="$out/rootfs"
-log="$out/serial.log"
+log="$out/boot-report.log"
 
 mb() { awk -v b="$1" 'BEGIN { printf "%.1f", b / 1048576 }'; }
 dir_bytes() { du -sb --apparent-size "$1" | cut -f1; }

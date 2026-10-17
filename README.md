@@ -41,11 +41,13 @@ Numbers are from the build in October 2026 (kernels 6.8.0-147 and 5.15.0-198); t
 
 ## What `boot-test.sh` checks
 
-It starts the image with `qemu-system-x86_64`, handing QEMU the kernel and initramfs directly (`-kernel`, `-initrd`), with no network and the serial console written to a file. The image has one extra systemd unit, `boot-ok.service`. It is ordered after `multi-user.target`, and does three things:
+It starts the image with `qemu-system-x86_64`, handing QEMU the kernel and initramfs directly (`-kernel`, `-initrd`), with no network. The serial console goes to a file for people to read, and a second serial port goes to a file of its own for the test. The image has one extra systemd unit, `boot-ok.service`. It is ordered after `multi-user.target`, and does three things:
 
 - waits for `systemctl is-system-running --wait`, and prints the state (the test wants `running`, not `degraded`);
 - prints the kernel version, the failed units, memory use, the process count and the `systemd-analyze` timing;
 - prints a marker line and powers the machine off.
+
+The report is written to the console and to the second serial port, and the test reads the second one. The console is shared with the kernel and with journald, and in the first CI run under KVM their writes cut the `state=running` line in half: the machine had booted fine and the test failed. Nothing else writes to `ttyS1`, so the report arrives intact.
 
 The script passes only if the marker is on the console and the state was `running`. A hang is caught by a timeout. KVM is used if `/dev/kvm` is usable, otherwise it falls back to software emulation (several times slower; the report says which one ran).
 

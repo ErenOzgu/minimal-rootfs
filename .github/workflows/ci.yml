@@ -50,6 +50,7 @@ jobs:
           name: ${{ matrix.suite }}-boot
           path: |
             out/${{ matrix.suite }}/serial.log
+            out/${{ matrix.suite }}/boot-report.log
             out/${{ matrix.suite }}/report.json
             out/${{ matrix.suite }}/report.md
           if-no-files-found: ignore
