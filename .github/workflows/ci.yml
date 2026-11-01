@@ -18,7 +18,7 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: shellcheck -x build.sh boot-test.sh report.sh overlay/usr/local/sbin/boot-ok
 
   image:
@@ -30,7 +30,7 @@ jobs:
         suite: [jammy, noble]
     name: build, boot, measure (${{ matrix.suite }})
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install debootstrap and QEMU
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends debootstrap qemu-system-x86
       - name: Build the image
@@ -45,7 +45,7 @@ jobs:
           if [ -f "out/${{ matrix.suite }}/report.md" ]; then cat "out/${{ matrix.suite }}/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
       - name: Keep the console log and the numbers
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ matrix.suite }}-boot
           path: |
